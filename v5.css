@@ -1,0 +1,12 @@
+/* Kakera Vault v5 — pestaña Amigos */
+.v5-tab{padding:14px 18px 40px}
+.kv-wrap{max-width:1400px;margin:0 auto;display:grid;gap:14px}
+.kv-card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:10px;align-content:start}
+.kv-card h3{margin:0;font-size:15px}
+.kv-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.kv-row .input{flex:1;min-width:180px}
+.kv-stats{display:flex;flex-wrap:wrap;gap:8px 18px;color:var(--muted);font-size:13px}
+.kv-stats b{color:var(--text)}
+.kv-pill{display:inline-block;font-size:11px;padding:1px 9px;border-radius:99px;background:rgba(255,255,255,.08);color:var(--muted)}
+.kv-toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.kv-ro{cursor:default}

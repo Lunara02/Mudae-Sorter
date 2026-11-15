@@ -1,0 +1,56 @@
+{
+  "name": "kakera-vault",
+  "productName": "Kakera Vault",
+  "version": "5.0.0",
+  "description": "Kakera Vault: gestor de coleccion (harem) de Mudae para PC. Ordena, edita, genera comandos, comparte tu coleccion y planifica intercambios.",
+  "author": "Kakera Vault",
+  "license": "MIT",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win nsis && electron-builder --win portable",
+    "dist:portable": "electron-builder --win portable",
+    "dist:installer": "electron-builder --win nsis"
+  },
+  "build": {
+    "appId": "net.kakeravault.app",
+    "productName": "Kakera Vault",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "index.html",
+      "style.css",
+      "v5.css",
+      "core.js",
+      "app.js",
+      "v5.js",
+      "icons/**/*",
+      "main.js",
+      "preload.js"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Kakera Vault"
+    },
+    "portable": {
+      "artifactName": "KakeraVault-Portable-${version}.exe"
+    }
+  },
+  "devDependencies": {
+    "electron": "^45.3.2",
+    "electron-builder": "^26.18.0"
+  }
+}
