@@ -114,6 +114,7 @@
     <option value="color:#"></option>
     <option value="keys:>=3"></option>
     <option value="ka:>1000"></option>
+    <option value="rank:<500"></option>
     <option value="pin:yes"></option>
     <option value="has:note"></option>
     <option value="dup"></option>
@@ -339,6 +340,7 @@
 
       <div class="row" style="gap:6px;margin-top:4px">
         <button type="button" class="btn small" data-sort="kakera">◆ Por Kakera (Mayor a menor)</button>
+        <button type="button" class="btn small" data-sort="rank">🏅 Por Ranking (mejor primero)</button>
         <button type="button" class="btn small" data-sort="keys">🔑 Por Llaves (Mayor a menor)</button>
         <button type="button" class="btn small" data-sort="note">📝 Por Notas (A-Z)</button>
         <button type="button" class="btn small" data-sort="series">📚 Por Serie (A-Z)</button>
@@ -475,6 +477,7 @@
         <div class="readonly-badges">
           <span class="ro-badge kakera" id="roKakera" title="Valor importado de Mudae">◆ 0 ka</span>
           <span class="ro-badge keys" id="roKeys" title="Llaves importadas de Mudae">🔑 Sin llaves</span>
+          <span class="ro-badge" id="roRank" title="Ranking de claim en Mudae (más bajo = más popular)" hidden>🏅</span>
           <button type="button" class="ro-badge" id="btnCopyCode" title="Código del personaje en Mudae · clic para copiar" style="cursor:pointer;border:0">Código <b id="editCode">—</b></button>
         </div>
       </div>

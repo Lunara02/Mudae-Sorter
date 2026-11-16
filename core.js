@@ -182,6 +182,10 @@ function parseExport(text) {
     const urlMatch = line.match(/^(.*?)\s+-\s+(https?:\/\/\S+)\s*$/i);
     if (urlMatch) {
       let left = urlMatch[1].trim();
+      // Ranking de claim (#N, flag «r» de Mudae) y personaje desactivado (🚫)
+      const rankM = left.replace(/🚫/g, '').match(/^[-•·*\s]*#([\d.,]+)/);
+      const rank = rankM ? (Number(rankM[1].replace(/\D/g, '')) || null) : null;
+      const disabled = /🚫/.test(left);
       const right = urlMatch[2].trim();
 
       // Quitar guion o ranking inicial ("- #3.434Marvelous Sunday" o "#123 - Nombre")
@@ -273,6 +277,8 @@ function parseExport(text) {
           image: imgUrl,
           seriesTotal: current ? current.total : null,
           mudaeId,
+          rank,
+          disabled,
         });
         continue;
       }

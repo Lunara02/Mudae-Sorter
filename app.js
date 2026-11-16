@@ -1037,6 +1037,7 @@ function cardEl(c, index) {
     'Serie: ' + c.series,
     'Kakera: ' + (c.kakera !== null && c.kakera !== undefined ? fmtKakera(c.kakera) + ' ka' : '0 ka'),
     'Llaves: ' + (keyCount > 0 ? keyCount : 'Sin llaves'),
+    c.rank ? 'Ranking: #' + c.rank : '',
     c.note ? 'Nota: ' + c.note : '',
     c.embedColor ? 'Color: ' + c.embedColor : '',
     (c.tags || []).length ? 'Etiquetas: ' + c.tags.join(', ') : '',
@@ -1234,6 +1235,9 @@ function charMatchesToken(c, token, dupKeys) {
     case 'ka':
     case 'kakera':
       return numMatch(Number(c.kakera) || 0, parseNumQuery(value));
+    case 'rank':
+    case 'ranking':
+      return c.rank ? numMatch(c.rank, parseNumQuery(value)) : false;
     case 'pin':
     case 'pinned':
     case 'fijado':
@@ -2982,6 +2986,13 @@ function sortBy(mode) {
       const vb = cb && cb.kakera !== null && cb.kakera !== undefined ? Number(cb.kakera) : -1;
       return vb - va || (pos.get(a) - pos.get(b));
     });
+  } else if (mode === 'rank') {
+    // Ranking de claim: el mejor (número más bajo) primero; sin ranking al final
+    unpinned.sort((a, b) => {
+      const ra = Number(byId.get(a)?.rank) || Infinity;
+      const rb = Number(byId.get(b)?.rank) || Infinity;
+      return (ra === rb ? 0 : ra < rb ? -1 : 1) || (pos.get(a) - pos.get(b));
+    });
   } else if (mode === 'keys') {
     unpinned.sort((a, b) => {
       const ka = Number(byId.get(a)?.keys) || 0;
@@ -3456,6 +3467,11 @@ function openEdit(id) {
   const keyCount = Number(c.keys) || 0;
   $('#roKakera').textContent = `◆ ${fmtKakera(Number(c.kakera) || 0)} ka`;
   $('#roKeys').textContent = keyCount > 0 ? `🔑 ${keyCount} llave(s)` : '🔑 Sin llaves';
+  const roRank = $('#roRank');
+  if (roRank) {
+    roRank.textContent = c.rank ? `🏅 Ranking #${fmtKakera(c.rank)}` : '🏅 Sin ranking';
+    roRank.hidden = !c.rank;
+  }
 
   const pinBtn = $('#btnEditTogglePin');
   if (pinBtn) {

@@ -30,6 +30,7 @@ edita en lote, genera comandos para Discord, comparte tu lista y mira la de tus 
   historial de comandos, copias de seguridad, temas y deshacer/rehacer.
 - **Series**: ordenar por serie con presets y vista previa.
 - **📤 Exportar harem**: comandos para dejar tu harem en Mudae con el orden elegido. Opción **Nitro** para bloques más largos.
+- **Ranking de claim**: la importación guarda el #N de cada personaje; se ve en la ficha, se busca con `rank:<500` y se ordena con «Por Ranking».
 - **Ficha de personaje**: imagen, serie, Kakera, llaves, **código de Mudae** (clic para copiar), color de marco `$ec`
   (solo con llaves) y **Mostrar imágenes**.
 - **👤 Perfiles**: varias colecciones independientes (otro servidor u otra cuenta de Mudae).
