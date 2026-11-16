@@ -8,7 +8,7 @@ const {
   debounce, fmtKakera, dateStamp, escapeHtml, hexToRgba, adjustHexBg,
   norm, keyTokenRe, extractKeyInfo, cleanCharName, cleanNoteText, cleanTag,
   parseTags, makeId, normalizeImageUrl, extractMudaeId, parseExport,
-  buildSmBlocks, buildDivorceBlocks
+  buildSmBlocks, buildDivorceBlocks, exportCommand
 } = window.MudaeCore;
 
 // ¿Corremos dentro de la app de escritorio (Electron)?
@@ -180,7 +180,8 @@ const DEFAULTS = {
   tagFilter: '',
   autoFileEnabled: false,
   autoFilePath: '',
-  nitro: false
+  nitro: false,
+  includeSpheres: false
 };
 
 let state = {
@@ -1038,6 +1039,7 @@ function cardEl(c, index) {
     'Kakera: ' + (c.kakera !== null && c.kakera !== undefined ? fmtKakera(c.kakera) + ' ka' : '0 ka'),
     'Llaves: ' + (keyCount > 0 ? keyCount : 'Sin llaves'),
     c.rank ? 'Ranking: #' + c.rank : '',
+    Number(c.spheres) > 0 ? 'Esferas: ' + c.spheres : '',
     c.note ? 'Nota: ' + c.note : '',
     c.embedColor ? 'Color: ' + c.embedColor : '',
     (c.tags || []).length ? 'Etiquetas: ' + c.tags.join(', ') : '',
@@ -1084,6 +1086,14 @@ function cardEl(c, index) {
     kb.className = 'key-badge' + (keyCount >= 10 ? ' soul' : keyCount >= 6 ? ' chaos' : '');
     kb.textContent = '🔑 ×' + keyCount;
     bottomBadges.append(kb);
+  }
+
+  if (Number(c.spheres) > 0) {
+    const sb = document.createElement('span');
+    sb.className = 'sphere-badge';
+    sb.textContent = '🔮 ' + fmtKakera(c.spheres) + ' sp';
+    sb.title = 'Esferas: ' + fmtKakera(c.spheres);
+    bottomBadges.append(sb);
   }
 
   if (c.embedColor) {
@@ -1235,6 +1245,10 @@ function charMatchesToken(c, token, dupKeys) {
     case 'ka':
     case 'kakera':
       return numMatch(Number(c.kakera) || 0, parseNumQuery(value));
+    case 'sp':
+    case 'esferas':
+    case 'spheres':
+      return numMatch(Number(c.spheres) || 0, parseNumQuery(value));
     case 'rank':
     case 'ranking':
       return c.rank ? numMatch(c.rank, parseNumQuery(value)) : false;
@@ -1344,7 +1358,7 @@ function render() {
 
   if (!state.chars.length) {
     emptyTitle.textContent = 'No se ha importado ninguna colección';
-    emptyDesc.innerHTML = 'Seleccione el botón superior <b>Importar Harem</b> para cargar su lista con <code>$mmsaty+ri-c+x+ko</code>.';
+    emptyDesc.innerHTML = 'Seleccione el botón superior <b>Importar Harem</b> para cargar su lista con <code>' + exportCommand(state.settings.includeSpheres) + '</code>.';
     setVisible(emptyBtn, true);
     setVisible(empty, true);
   } else if (!ids.length) {
@@ -2752,7 +2766,15 @@ function ensureSelected(id) {
   lastClicked = id;
 }
 
+function updateExportCommandUI() {
+  const code = $('#tutorialCmd');
+  if (code) code.textContent = exportCommand(state.settings.includeSpheres);
+  const opt = $('#optSpheres');
+  if (opt) opt.checked = !!state.settings.includeSpheres;
+}
+
 function openImportModal() {
+  updateExportCommandUI();
   $('#importMsg').textContent = '';
   resetImportModalView();
   openModalById('importModal');
@@ -2848,7 +2870,7 @@ function doImport() {
   const msg = $('#importMsg');
   const setMsg = (text, kind) => { msg.textContent = text; msg.className = 'msg ' + (kind || ''); };
 
-  if (!raw.trim()) { setMsg('Pegue primero el texto exportado con $mmsaty+ri-c+x+ko.', 'err'); return; }
+  if (!raw.trim()) { setMsg('Pegue primero el texto exportado desde Discord.', 'err'); return; }
 
   const { chars, series, skipped } = parseExport(raw);
   if (!chars.length) {
@@ -2986,6 +3008,8 @@ function sortBy(mode) {
       const vb = cb && cb.kakera !== null && cb.kakera !== undefined ? Number(cb.kakera) : -1;
       return vb - va || (pos.get(a) - pos.get(b));
     });
+  } else if (mode === 'spheres') {
+    unpinned.sort((a, b) => (Number(byId.get(b)?.spheres) || 0) - (Number(byId.get(a)?.spheres) || 0) || (pos.get(a) - pos.get(b)));
   } else if (mode === 'rank') {
     // Ranking de claim: el mejor (número más bajo) primero; sin ranking al final
     unpinned.sort((a, b) => {
@@ -3467,6 +3491,11 @@ function openEdit(id) {
   const keyCount = Number(c.keys) || 0;
   $('#roKakera').textContent = `◆ ${fmtKakera(Number(c.kakera) || 0)} ka`;
   $('#roKeys').textContent = keyCount > 0 ? `🔑 ${keyCount} llave(s)` : '🔑 Sin llaves';
+  const roSp = $('#roSpheres');
+  if (roSp) {
+    roSp.textContent = '🔮 ' + fmtKakera(c.spheres || 0) + ' esferas';
+    roSp.hidden = !(Number(c.spheres) > 0);
+  }
   const roRank = $('#roRank');
   if (roRank) {
     roRank.textContent = c.rank ? `🏅 Ranking #${fmtKakera(c.rank)}` : '🏅 Sin ranking';
@@ -4383,7 +4412,13 @@ function bindEvents() {
   $('#btnCancelImport').addEventListener('click', closeImportModal);
   $('#importModal').addEventListener('click', e => { if (e.target.id === 'importModal') closeImportModal(); });
 
-  $('#btnCopyCmdTutorial').addEventListener('click', () => copyText('$mmsaty+ri-c+x+ko'));
+  $('#btnCopyCmdTutorial').addEventListener('click', () => copyText(exportCommand(state.settings.includeSpheres)));
+  const optSph = $('#optSpheres');
+  if (optSph) optSph.addEventListener('change', () => {
+    state.settings.includeSpheres = optSph.checked;
+    updateExportCommandUI();
+    saveSoon();
+  });
 
   if (mainMenuBtn) mainMenuBtn.addEventListener('click', e => {
     e.stopPropagation();
@@ -5024,6 +5059,7 @@ window.MudaeApp = {
   getChars() { return state.chars; },
   getState() { return state; },
   imgSrc(c) { return srcFor(c); },
+  exportCommand() { return exportCommand(state.settings.includeSpheres); },
   getOrder() { return state.order; },
   getEditingId() { return editingId; },
   openModal: openModalById,

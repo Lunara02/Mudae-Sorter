@@ -13,7 +13,7 @@ const norm = C.norm;
 const fmt = C.fmtKakera;
 const $ = (s, r = document) => r.querySelector(s);
 
-const EXPORT_CMD = '$mmsaty+ri-c+x+ko';
+const exportCmd = () => (A.exportCommand ? A.exportCommand() : '$mmsaty+ri-c+x+ko');
 
 /* ---------------------------------------------------------------- utilidades */
 function compact(n) {
@@ -26,13 +26,14 @@ function compact(n) {
 function metrics() {
   const st = A.getState();
   const chars = st.chars || [];
-  let ka = 0, keys = 0, withKeys = 0, pinned = 0;
+  let ka = 0, keys = 0, withKeys = 0, pinned = 0, spheres = 0;
   const bySeries = new Map();
   for (const c of chars) {
     const k = Number(c.kakera) || 0;
     ka += k;
     const ky = Number(c.keys) || 0;
     keys += ky;
+    spheres += Number(c.spheres) || 0;
     if (ky > 0) withKeys++;
     if (c.pinned) pinned++;
     const s = bySeries.get(c.series) || { name: c.series, n: 0, ka: 0 };
@@ -41,7 +42,7 @@ function metrics() {
   }
   const top = chars.slice().sort((a, b) => (Number(b.kakera) || 0) - (Number(a.kakera) || 0)).slice(0, 10);
   const series = [...bySeries.values()].sort((a, b) => b.ka - a.ka);
-  return { st, chars, ka, keys, withKeys, pinned, top, series, avg: chars.length ? Math.round(ka / chars.length) : 0 };
+  return { st, chars, ka, keys, withKeys, pinned, spheres, top, series, avg: chars.length ? Math.round(ka / chars.length) : 0 };
 }
 
 /* ---------------------------------------------------------------- panel de inicio */
@@ -75,14 +76,14 @@ function renderHome() {
       <p>Organiza tu harem de Mudae, genera los comandos para ordenarlo, comparte tu lista y mira las de tus amigos.</p></div>
       <ol class="home-steps">
         <li><b>1</b><div>En Discord ejecuta este comando; Mudae te responde por mensaje directo.
-          <div class="home-code"><code>${esc(EXPORT_CMD)}</code><button class="btn small" id="homeCopyCmd">Copiar</button></div></div></li>
+          <div class="home-code"><code>${esc(exportCmd())}</code><button class="btn small" id="homeCopyCmd">Copiar</button></div></div></li>
         <li><b>2</b><div>Copia desde el primer encabezado de serie hasta el último personaje.</div></li>
         <li><b>3</b><div>Pulsa <b>Importar harem</b> y pega el texto (o arrastra un <code>.txt</code> a la ventana).</div></li>
       </ol>
       <div class="home-actions"><button class="btn primary" id="homeImport">📥 Importar harem</button>
         <button class="btn" id="homeFriends">👥 Ver la lista de un amigo</button></div>
     </section></div>`;
-    $('#homeCopyCmd').onclick = () => A.copyText(EXPORT_CMD);
+    $('#homeCopyCmd').onclick = () => A.copyText(exportCmd());
     $('#homeImport').onclick = () => $('#btnOpenImport').click();
     $('#homeFriends').onclick = () => A.switchTab('friends');
     return;
@@ -102,7 +103,7 @@ function renderHome() {
 
     <section class="home-kpis">
       ${[['Personajes', fmt(m.chars.length), '👤'], ['Series', fmt(m.series.length), '🗂️'], ['Kakera total', compact(m.ka), '💎'],
-          ['Promedio por personaje', fmt(m.avg) + ' ka', '📊'], ['Llaves', fmt(m.keys), '🔑'], ['Con llaves', fmt(m.withKeys), '🗝️']]
+          ['Promedio por personaje', fmt(m.avg) + ' ka', '📊'], ['Llaves', fmt(m.keys), '🔑'], ['Con llaves', fmt(m.withKeys), '🗝️']].concat(m.spheres > 0 ? [['Esferas', fmt(m.spheres), '🔮']] : [])
         .map(([l, v, i]) => `<div class="home-kpi"><span class="ki">${i}</span><div><b>${esc(v)}</b><small>${esc(l)}</small></div></div>`).join('')}
     </section>
 

@@ -208,6 +208,19 @@ function parseExport(text) {
         left = (left.slice(0, kaMatch.index) + ' ' + left.slice(kaMatch.index + kaMatch[0].length)).trim();
       }
 
+      // Esferas ("1.200 sp", flag «z» de Mudae). Es un campo opcional: solo aparece si se pidió.
+      let spheres = null;
+      const spAll = [...left.matchAll(/(\d[\d.,]*)\s*sp\b/gi)];
+      if (spAll.length) {
+        const sm = spAll[spAll.length - 1];
+        const sd = sm[1].replace(/\D/g, '');
+        if (sd) spheres = Number(sd);
+        left = (left.slice(0, sm.index) + ' ' + left.slice(sm.index + sm[0].length)).trim();
+        // Algunas salidas añaden los beneficios tras las esferas ("… sp - 10 - url"): no forman parte del nombre
+        const perkM = left.match(/\s+-\s+([A-Za-z0-9%+]{1,12})$/);
+        if (perkM) left = left.slice(0, perkM.index).trim();
+      }
+
       // Formato "NOMBRE   => dueño | nota · ($wa) · (llaves) (#HEX)"
       let forcedNote = null;
       const arrow = left.match(/^(.*?)\s*(?:💞|💕|❤️|♥️)?\s*=>\s*\S*\s*(.*)$/);
@@ -279,6 +292,7 @@ function parseExport(text) {
           mudaeId,
           rank,
           disabled,
+          spheres,
         });
         continue;
       }
@@ -336,12 +350,17 @@ function buildDivorceBlocks(names, limit = 1800) {
   return blocks;
 }
 
+// Comando de Discord que exporta el harem. Con esferas añade la flag «z+» (lista completa).
+function exportCommand(withSpheres) {
+  return withSpheres ? '$mmsaty+z+ri-c+x+ko' : '$mmsaty+ri-c+x+ko';
+}
+
 /* ---------- API pública del núcleo ---------- */
 window.MudaeCore = {
   debounce, fmtKakera, dateStamp, escapeHtml, hexToRgba, adjustHexBg,
   norm, keyTokenRe, extractKeyInfo, cleanCharName, cleanNoteText, cleanTag,
   parseTags, makeId, normalizeImageUrl, extractMudaeId, parseExport,
-  buildSmBlocks, buildDivorceBlocks
+  buildSmBlocks, buildDivorceBlocks, exportCommand
 };
 
 })();

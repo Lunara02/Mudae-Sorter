@@ -169,3 +169,5 @@ main.v5-tab,#tabLib,#tabSeries{animation:kvFade .22s ease-out}
 
 #toolbar .grow{flex:3 1 300px}
 #toolbar{row-gap:8px}
+
+.sphere-badge{display:inline-flex;align-items:center;gap:3px;font-size:10.5px;font-weight:700;padding:1px 7px;border-radius:99px;color:#f0abfc;background:rgba(217,70,239,.14);border:1px solid rgba(217,70,239,.38)}

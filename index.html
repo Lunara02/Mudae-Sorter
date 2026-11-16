@@ -115,6 +115,7 @@
     <option value="keys:>=3"></option>
     <option value="ka:>1000"></option>
     <option value="rank:<500"></option>
+    <option value="sp:>0"></option>
     <option value="pin:yes"></option>
     <option value="has:note"></option>
     <option value="dup"></option>
@@ -255,10 +256,11 @@
       <strong>📖 Instrucciones para exportar su colección desde Discord:</strong>
       <ol>
         <li>En su servidor de Discord con Mudae, ejecute el siguiente comando:<br>
-          <code>$mmsaty+ri-c+x+ko</code>
+          <code id="tutorialCmd">$mmsaty+ri-c+x+ko</code>
           <button type="button" class="btn small" id="btnCopyCmdTutorial" style="padding:2px 8px;font-size:11px;margin-left:6px">Copiar comando</button>
         </li>
-        <li>Mudae enviará la lista completa por Mensaje Directo (DM) incluyendo series, notas, valores de kakera, llaves, colores e imágenes.</li>
+        <li>Mudae enviará la lista completa por Mensaje Directo (DM) incluyendo series, notas, valores de kakera, llaves, colores e imágenes.
+          <label class="check" style="margin-top:6px" title="Añade la flag z+ al comando para que Mudae incluya las esferas de cada personaje"><input type="checkbox" id="optSpheres"> Incluir esferas (🔮) en la exportación</label></li>
         <li><b>Formato requerido:</b> Copie el texto <b>desde el primer encabezado de serie</b> (ejemplo: <code>5-toubun no Hanayome - 4/12</code>) <b>hasta la última línea del último personaje</b> (incluyendo su enlace <code>https://...</code>), omitiendo el encabezado general del mensaje.</li>
       </ol>
       <div class="muted" style="font-size:11.5px;margin-top:6px">ℹ️ El almacenamiento en caché de imágenes es automático. Para actualizar valores de kakera o llaves, realice una nueva importación.</div>
@@ -341,6 +343,7 @@
       <div class="row" style="gap:6px;margin-top:4px">
         <button type="button" class="btn small" data-sort="kakera">◆ Por Kakera (Mayor a menor)</button>
         <button type="button" class="btn small" data-sort="rank">🏅 Por Ranking (mejor primero)</button>
+        <button type="button" class="btn small" data-sort="spheres">🔮 Por Esferas (Mayor a menor)</button>
         <button type="button" class="btn small" data-sort="keys">🔑 Por Llaves (Mayor a menor)</button>
         <button type="button" class="btn small" data-sort="note">📝 Por Notas (A-Z)</button>
         <button type="button" class="btn small" data-sort="series">📚 Por Serie (A-Z)</button>
@@ -477,6 +480,7 @@
         <div class="readonly-badges">
           <span class="ro-badge kakera" id="roKakera" title="Valor importado de Mudae">◆ 0 ka</span>
           <span class="ro-badge keys" id="roKeys" title="Llaves importadas de Mudae">🔑 Sin llaves</span>
+          <span class="ro-badge" id="roSpheres" title="Esferas importadas de Mudae" hidden>🔮</span>
           <span class="ro-badge" id="roRank" title="Ranking de claim en Mudae (más bajo = más popular)" hidden>🏅</span>
           <button type="button" class="ro-badge" id="btnCopyCode" title="Código del personaje en Mudae · clic para copiar" style="cursor:pointer;border:0">Código <b id="editCode">—</b></button>
         </div>
