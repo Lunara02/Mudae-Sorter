@@ -180,8 +180,7 @@ const DEFAULTS = {
   tagFilter: '',
   autoFileEnabled: false,
   autoFilePath: '',
-  nitro: false,
-  includeSpheres: false
+  nitro: false
 };
 
 let state = {
@@ -1358,7 +1357,7 @@ function render() {
 
   if (!state.chars.length) {
     emptyTitle.textContent = 'No se ha importado ninguna colección';
-    emptyDesc.innerHTML = 'Seleccione el botón superior <b>Importar Harem</b> para cargar su lista con <code>' + exportCommand(state.settings.includeSpheres) + '</code>.';
+    emptyDesc.innerHTML = 'Seleccione el botón superior <b>Importar Harem</b> para cargar su lista con <code>' + exportCommand() + '</code>.';
     setVisible(emptyBtn, true);
     setVisible(empty, true);
   } else if (!ids.length) {
@@ -2768,9 +2767,7 @@ function ensureSelected(id) {
 
 function updateExportCommandUI() {
   const code = $('#tutorialCmd');
-  if (code) code.textContent = exportCommand(state.settings.includeSpheres);
-  const opt = $('#optSpheres');
-  if (opt) opt.checked = !!state.settings.includeSpheres;
+  if (code) code.textContent = exportCommand();
 }
 
 function openImportModal() {
@@ -4412,13 +4409,7 @@ function bindEvents() {
   $('#btnCancelImport').addEventListener('click', closeImportModal);
   $('#importModal').addEventListener('click', e => { if (e.target.id === 'importModal') closeImportModal(); });
 
-  $('#btnCopyCmdTutorial').addEventListener('click', () => copyText(exportCommand(state.settings.includeSpheres)));
-  const optSph = $('#optSpheres');
-  if (optSph) optSph.addEventListener('change', () => {
-    state.settings.includeSpheres = optSph.checked;
-    updateExportCommandUI();
-    saveSoon();
-  });
+  $('#btnCopyCmdTutorial').addEventListener('click', () => copyText(exportCommand()));
 
   if (mainMenuBtn) mainMenuBtn.addEventListener('click', e => {
     e.stopPropagation();
@@ -5059,7 +5050,7 @@ window.MudaeApp = {
   getChars() { return state.chars; },
   getState() { return state; },
   imgSrc(c) { return srcFor(c); },
-  exportCommand() { return exportCommand(state.settings.includeSpheres); },
+  exportCommand() { return exportCommand(); },
   getOrder() { return state.order; },
   getEditingId() { return editingId; },
   openModal: openModalById,

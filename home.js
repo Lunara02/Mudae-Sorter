@@ -13,7 +13,7 @@ const norm = C.norm;
 const fmt = C.fmtKakera;
 const $ = (s, r = document) => r.querySelector(s);
 
-const exportCmd = () => (A.exportCommand ? A.exportCommand() : '$mmsaty+ri-c+x+ko');
+const exportCmd = () => (A.exportCommand ? A.exportCommand() : '$mmsaty+z+ri-c+x+ko');
 
 /* ---------------------------------------------------------------- utilidades */
 function compact(n) {

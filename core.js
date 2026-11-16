@@ -4,7 +4,7 @@
    Utilidades SIN dependencias del DOM ni del estado de la aplicación:
      · formato genérico (fechas, números, escape, colores),
      · normalización de texto y nombres,
-     · parser robusto de las exportaciones de Mudae ($mmsaty+ri-c+x+ko),
+     · parser robusto de las exportaciones de Mudae ($mmsaty+z+ri-c+x+ko),
      · constructores de comandos ($sm y $divorce).
 
    Se carga como script clásico ANTES de app.js (nada de módulos ES, para que
@@ -179,7 +179,8 @@ function parseExport(text) {
       continue;
     }
 
-    const urlMatch = line.match(/^(.*?)\s+-\s+(https?:\/\/\S+)\s*$/i);
+    // El enlace de la imagen puede venir entre < > (p. ej. «- <https://mudae.net/…png>»)
+    const urlMatch = line.match(/^(.*?)\s+-\s+<?(https?:\/\/[^\s<>]+)>?\s*$/i);
     if (urlMatch) {
       let left = urlMatch[1].trim();
       // Ranking de claim (#N, flag «r» de Mudae) y personaje desactivado (🚫)
@@ -350,10 +351,10 @@ function buildDivorceBlocks(names, limit = 1800) {
   return blocks;
 }
 
-// Comando de Discord que exporta el harem. Con esferas añade la flag «z+» (lista completa).
-function exportCommand(withSpheres) {
-  return withSpheres ? '$mmsaty+z+ri-c+x+ko' : '$mmsaty+ri-c+x+ko';
-}
+// Comando de Discord que exporta el harem: series, ruletas, llaves, ranking de claim,
+// color, desactivados, Kakera, dueño y esferas (z+).
+const EXPORT_COMMAND = '$mmsaty+z+ri-c+x+ko';
+function exportCommand() { return EXPORT_COMMAND; }
 
 /* ---------- API pública del núcleo ---------- */
 window.MudaeCore = {
