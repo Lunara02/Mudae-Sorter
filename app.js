@@ -179,7 +179,8 @@ const DEFAULTS = {
   themeLight: false,
   tagFilter: '',
   autoFileEnabled: false,
-  autoFilePath: ''
+  autoFilePath: '',
+  nitro: false
 };
 
 let state = {
@@ -1410,6 +1411,7 @@ function render() {
 
   if (document.body.dataset.tab === 'series') renderSeriesOrganizer();
   if (typeof window.__mudaeAfterRender === 'function') window.__mudaeAfterRender();
+  document.dispatchEvent(new CustomEvent('mudae:render'));
 }
 
 /* ================= ORDENAR POR SERIE ($sm series) ================= */
@@ -1425,7 +1427,10 @@ function computeSeriesBuckets() {
   return buckets;
 }
 
-function buildSmSeriesBlocks(seriesNames, limit = 1800) {
+// Límite de caracteres por mensaje de Discord (Nitro permite mensajes más largos)
+const cmdLimit = () => (state.settings.nitro ? 3800 : 1800);
+
+function buildSmSeriesBlocks(seriesNames, limit = cmdLimit()) {
   const names = (seriesNames || []).map(s => String(s || '').trim()).filter(Boolean);
   const chunks = [];
   let cur = [];
@@ -2439,6 +2444,8 @@ function applySettings() {
   if (noteFilterEl) noteFilterEl.value = state.settings.noteFilter || '';
   const tagFilterEl = $('#tagFilter');
   if (tagFilterEl) tagFilterEl.value = state.settings.tagFilter || '';
+  const nitroEl = $('#optNitro');
+  if (nitroEl) nitroEl.checked = !!state.settings.nitro;
   const autoSmEl = $('#optAutoSmOnSort');
   if (autoSmEl) autoSmEl.checked = state.settings.autoSmOnSort !== false;
   const seriesPinnedEl = $('#optSeriesPinned');
@@ -2811,6 +2818,8 @@ function commitImport(chars, seriesMeta, warnings, extra = {}) {
     at: Date.now(),
     chars: chars.length,
     series: seriesMeta.length,
+    ka: chars.reduce((s, c) => s + (Number(c.kakera) || 0), 0),
+    keys: chars.reduce((s, c) => s + (Number(c.keys) || 0), 0),
     skipped: Number(extra.skipped) || 0,
     warnings: warnings.slice(0, 10)
   }, ...state.importHistory].slice(0, 30);
@@ -3165,7 +3174,7 @@ function openSm(customTitle, scopeOverride) {
   const rawNames = commandNamesForScope(scope);
   if (!rawNames.length) { toast('El alcance seleccionado no tiene personajes'); return; }
   const { names, warnings } = validateCommandNames(rawNames);
-  const blocks = buildSmBlocks(names);
+  const blocks = buildSmBlocks(names, cmdLimit());
   const extraNote = blocks.length > 1
     ? 'Los bloques se encadenan automáticamente mediante <code>$smpos &lt;último personaje anterior&gt; $ ...</code>. Ejecute cada bloque en orden dentro de Discord.'
     : 'Copie y pegue este comando en Discord para aplicar el nuevo orden a su colección.';
@@ -3261,7 +3270,7 @@ function openPendingCenter() {
   }
 
   if (orderChanged) {
-    const sm = buildSmBlocks(state.order.map(id => byId.get(id)?.name).filter(Boolean));
+    const sm = buildSmBlocks(state.order.map(id => byId.get(id)?.name).filter(Boolean), cmdLimit());
     blocks.push(...sm);
   }
 
@@ -3375,7 +3384,7 @@ function divorceSelected() {
 
   const { names, warnings } = validateCommandNames(selectedChars.map(c => cleanCharName(c.name)));
   if (!names.length) { toast('No hay nombres válidos para generar $divorce'); return; }
-  const blocks = buildDivorceBlocks(names);
+  const blocks = buildDivorceBlocks(names, cmdLimit());
 
   if (removeFromLib) {
     createBackupSafe('antes de divorciar');
@@ -4325,7 +4334,7 @@ function clearAllTagsFromSelection() {
 }
 
 /* ---------- pestañas principales (Biblioteca / Series) ---------- */
-const TAB_IDS = { lib: 'tabLib', series: 'tabSeries', friends: 'tabFriends' };
+const TAB_IDS = { home: 'tabHome', lib: 'tabLib', series: 'tabSeries', friends: 'tabFriends' };
 function switchTab(tab) {
   if (!TAB_IDS[tab]) tab = 'lib';
   document.body.dataset.tab = tab;
@@ -4404,6 +4413,10 @@ function bindEvents() {
   for (const btn of $$('[data-sort]')) {
     btn.addEventListener('click', () => sortBy(btn.dataset.sort));
   }
+  $('#optNitro').addEventListener('change', e => {
+    state.settings.nitro = e.target.checked;
+    saveSoon();
+  });
   $('#optAutoSmOnSort').addEventListener('change', e => {
     state.settings.autoSmOnSort = e.target.checked;
     saveSoon();
@@ -4944,8 +4957,8 @@ async function init() {
   applySettings();
   render();
 
-  let savedTab = 'lib';
-  try { savedTab = localStorage.getItem(TAB_LS) || 'lib'; } catch (e) {}
+  let savedTab = 'home';
+  try { savedTab = localStorage.getItem(TAB_LS) || 'home'; } catch (e) {}
   switchTab(savedTab);
 
   window.addEventListener('pagehide', () => { void flushSave(); });
@@ -4993,6 +5006,8 @@ window.MudaeApp = {
   notify(msg) { toast(msg); },
   // v5
   getChars() { return state.chars; },
+  getState() { return state; },
+  imgSrc(c) { return srcFor(c); },
   getOrder() { return state.order; },
   getEditingId() { return editingId; },
   openModal: openModalById,

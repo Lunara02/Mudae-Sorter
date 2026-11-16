@@ -331,10 +331,10 @@ function setupDragDrop() {
 }
 
 function setupShortcuts() {
-  const order = ['lib', 'series', 'friends'];
+  const order = ['home', 'lib', 'series', 'friends'];
   document.addEventListener('keydown', (e) => {
     if (!e.ctrlKey || e.altKey || e.shiftKey) return;
-    const i = '123'.indexOf(e.key);
+    const i = '1234'.indexOf(e.key);
     if (i < 0) return;
     e.preventDefault();
     A.switchTab(order[i]);

@@ -26,6 +26,7 @@
       "core.js",
       "app.js",
       "v5.js",
+      "home.js",
       "icons/**/*",
       "main.js",
       "preload.js"

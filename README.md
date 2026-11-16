@@ -30,6 +30,9 @@ npm run dist:portable   # solo portable
   fijar posiciones, edición/exportación en lote (`$note`, `$ec`, `$divorce` con deshacer), duplicados, estadísticas, historial de comandos,
   copias de seguridad, temas y deshacer/rehacer.
 - **Ordenar por serie** con presets y vista previa.
+- **Inicio**: panel con totales, Top 10 por Kakera, series con más Kakera y evolución del Kakera entre importaciones; guía de primeros pasos si aún no hay datos.
+- **Paleta de comandos** (`Ctrl+P`): acciones rápidas y búsqueda de personajes. Barra lateral con iconos y barra de estado.
+- **Opción Nitro** (Configuración → Orden): los comandos se dividen en bloques más largos.
 - **📤 Exportar harem**: genera los comandos para dejar tu harem en Mudae con el orden elegido.
 - **Ficha de personaje**: imagen, serie, Kakera, llaves, **código de Mudae** (clic para copiar), color de marco `$ec` (solo con llaves) y **Mostrar imágenes**.
 - **👤 Perfiles**: varias colecciones independientes (otro servidor u otra cuenta de Mudae). Se cambia desde el botón de perfil de la cabecera;
@@ -60,7 +63,8 @@ Al reimportar se actualizan Kakera, llaves, series e imágenes y se conservan no
 | `core.js` | Parser de la exportación de Mudae y constructores de comandos. |
 | `app.js` | Lógica de la biblioteca. |
 | `v5.js` | Amigos, perfiles, cuenta de Mudae y extras de escritorio. |
-| `docs/PLAN-V5.md` | Plan y decisiones. |
+| `home.js` | Inicio (panel), paleta de comandos y barra de estado. |
+| `docs/PLAN-V5.md`, `docs/ROADMAP.md` | Plan, decisiones y hoja de ruta. |
 
 ## ℹ️ Notas
 
