@@ -142,6 +142,7 @@ function renderHome() {
 
 /* ---------------------------------------------------------------- barra de estado */
 let appVersion = '';
+let appPaths = null;
 function renderStatus() {
   const bar = $('#statusbar');
   if (!bar) return;
@@ -158,6 +159,7 @@ function renderStatus() {
     <span class="sb-item">💎 ${compact(m.ka)} ka</span>
     <span class="sb-grow"></span>
     <span class="sb-item sb-dim">Ctrl+P · acciones</span>
+    ${appPaths && appPaths.portable ? `<span class="sb-item sb-portable" title="Datos junto al .exe: ${esc(appPaths.root)}">💼 Portable</span>` : ''}
     <span class="sb-item sb-dim">${appVersion ? 'v' + esc(appVersion) : ''}</span>`;
 }
 
@@ -179,8 +181,13 @@ const ACTIONS = [
   { t: 'Guardar proyecto (.json)', k: 'exportar proyecto', i: '💾', run: click('#btnProjExport') },
   { t: 'Cargar proyecto (.json)', k: 'importar proyecto', i: '📂', run: click('#btnProjImport') },
   { t: 'Configuración', k: 'ajustes tema apariencia', i: '⚙️', run: click('#btnOpenDrawer') },
+  { t: 'Abrir carpeta de datos', k: 'copias backup portable usb', i: '📁', run: () => openDataFolder() },
   { t: 'Ayuda y atajos', k: 'teclado', i: '⌨️', run: click('#btnHelp') }
 ];
+
+function openDataFolder() {
+  if (D && D.openFolder) D.openFolder(appPaths && appPaths.root);
+}
 
 let palItems = [], palIdx = 0;
 
@@ -268,6 +275,9 @@ function trackLayout() {
   trackLayout();
   setupPalette();
   if (D && D.getVersion) { try { appVersion = await D.getVersion(); } catch (e) {} }
+  if (D && D.getPaths) { try { appPaths = await D.getPaths(); } catch (e) {} }
+  const btnData = $('#btnOpenData');
+  if (btnData) btnData.onclick = openDataFolder;
   document.addEventListener('mudae:render', refresh);
   document.addEventListener('mudae:tab', (e) => { if (e.detail && e.detail.tab === 'home') renderHome(); });
   // El perfil y el estado de guardado se actualizan fuera de render()

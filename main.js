@@ -16,13 +16,47 @@ const fs = require('fs');
 
 const APP_TITLE = 'Kakera Vault';
 
+/* ---------- Modo portable ----------
+   La versión portable (electron-builder) expone la carpeta del .exe en
+   PORTABLE_EXECUTABLE_DIR. Todos los datos (colección, sesión de Mudae,
+   perfiles, copias) viven en «Kakera Vault Datos» junto al .exe: si lo copias
+   a otro PC o a un USB, tus datos van con él. Si esa carpeta no es escribible,
+   se usa la carpeta de datos normal de Windows. */
+const PORTABLE_DIR = process.env.PORTABLE_EXECUTABLE_DIR || '';
+let IS_PORTABLE = false;
+let DATA_ROOT = '';
+
+(function setupDataRoot() {
+  const legacy = app.getPath('userData');
+  if (PORTABLE_DIR && app.isPackaged) {
+    try {
+      const root = path.join(PORTABLE_DIR, 'Kakera Vault Datos');
+      const appData = path.join(root, 'app');
+      const firstRun = !fs.existsSync(appData);
+      fs.mkdirSync(path.join(root, 'copias'), { recursive: true });
+      fs.accessSync(root, fs.constants.W_OK);
+      // Primera vez: se traen los datos que ya existían en la carpeta normal de Windows
+      if (firstRun && fs.existsSync(legacy)) {
+        const skip = new Set(['Cache', 'Code Cache', 'GPUCache', 'DawnCache', 'DawnGraphiteCache', 'DawnWebGPUCache', 'Crashpad', 'lockfile', 'SingletonLock', 'SingletonCookie', 'SingletonSocket']);
+        try { fs.cpSync(legacy, appData, { recursive: true, filter: (src) => !skip.has(path.basename(src)) }); } catch (e) { /* se empieza de cero */ }
+      }
+      fs.mkdirSync(appData, { recursive: true });
+      app.setPath('userData', appData);
+      app.setPath('sessionData', appData);
+      DATA_ROOT = root;
+      IS_PORTABLE = true;
+    } catch (e) { IS_PORTABLE = false; }
+  }
+  if (!IS_PORTABLE) DATA_ROOT = legacy;
+})();
+
 if (!app.requestSingleInstanceLock()) {
   app.quit();
 } else {
   let win = null;
   const stateFile = () => path.join(app.getPath('userData'), 'window-state.json');
   const extraFile = () => path.join(app.getPath('userData'), 'kv-extra.json');
-  const docsDir = () => path.join(app.getPath('documents'), 'Kakera Vault');
+  const docsDir = () => (IS_PORTABLE ? path.join(DATA_ROOT, 'copias') : path.join(app.getPath('documents'), 'Kakera Vault'));
 
   function loadWindowState() {
     try { return JSON.parse(fs.readFileSync(stateFile(), 'utf8')); } catch (e) { return {}; }
@@ -142,6 +176,8 @@ if (!app.requestSingleInstanceLock()) {
   ipcMain.handle('app:version', () => app.getVersion());
   ipcMain.handle('app:paths', () => ({
     userData: app.getPath('userData'),
+    root: DATA_ROOT,
+    portable: IS_PORTABLE,
     docs: docsDir(),
     defaultBackup: path.join(docsDir(), 'coleccion-kakera-vault.json')
   }));
@@ -201,6 +237,29 @@ if (!app.requestSingleInstanceLock()) {
 
   ipcMain.handle('file:read', async (_e, filePath) => {
     try { return { ok: true, text: await fs.promises.readFile(filePath, 'utf8') }; }
+    catch (e) { return fail(e); }
+  });
+
+  // Copia diaria rotativa (una por día y perfil, se conservan las 7 últimas)
+  ipcMain.handle('backup:daily', async (_e, prefix, text) => {
+    try {
+      const pre = String(prefix || 'coleccion').toLowerCase().replace(/[^a-z0-9-]/g, '').slice(0, 30) || 'coleccion';
+      const dir = path.join(docsDir(), 'diarias');
+      await fs.promises.mkdir(dir, { recursive: true });
+      const day = new Date().toISOString().slice(0, 10);
+      const file = path.join(dir, pre + '-' + day + '.json');
+      if (fs.existsSync(file)) return { ok: true, created: false };
+      await fs.promises.writeFile(file + '.tmp', String(text), 'utf8');
+      await fs.promises.rename(file + '.tmp', file);
+      const re = new RegExp('^' + pre + '-[0-9]{4}-[0-9]{2}-[0-9]{2}[.]json$');
+      const mine = (await fs.promises.readdir(dir)).filter(n => re.test(n)).sort().reverse();
+      for (const old of mine.slice(7)) await fs.promises.rm(path.join(dir, old), { force: true });
+      return { ok: true, created: true, path: file };
+    } catch (e) { return fail(e); }
+  });
+
+  ipcMain.handle('file:open-folder', async (_e, dir) => {
+    try { const r = await shell.openPath(String(dir || DATA_ROOT)); return { ok: !r, error: r }; }
     catch (e) { return fail(e); }
   });
 

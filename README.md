@@ -1,73 +1,71 @@
-# 💎 Kakera Vault — v5
+# 💎 Kakera Vault — v5 (portable)
 
-Aplicación de **escritorio para PC** (Windows) para gestionar tu colección (harem) de
-[Mudae](https://mudae.net): importa, ordena, edita en lote, genera comandos para Discord,
-**comparte tu lista** y **mira la de tus amigos**. Todo se guarda en tu equipo: sin servidor, sin cuentas propias, sin enviar datos a terceros.
+Aplicación **portable para Windows** para gestionar tu colección (harem) de [Mudae](https://mudae.net): importa, ordena,
+edita en lote, genera comandos para Discord, comparte tu lista y mira la de tus amigos.
 
-## 🚀 Ejecutarla en local
+> **Un solo `.exe`, sin instalar nada.** Todos tus datos se guardan en una carpeta junto al ejecutable, así que puedes
+> moverlo a otro PC o a un USB y tu colección va con él. Sin servidor, sin cuentas propias, sin enviar datos a terceros.
 
-Requisitos: [Node.js](https://nodejs.org) 18 o superior y Windows 10/11.
+## 💼 Cómo funciona la versión portable
 
-```bash
-git clone <url-del-repo>
-cd <carpeta>
-npm install      # descarga Electron (una sola vez)
-npm start        # abre la app
-```
-
-Si `npm install` no descarga el binario de Electron: `node node_modules/electron/install.js`.
-
-Generar ejecutables (en `dist/`):
-
-```bash
-npm run dist            # instalador + portable
-npm run dist:portable   # solo portable
-```
+- Ejecuta `KakeraVault-Portable-<versión>.exe` desde donde quieras (escritorio, USB…). La primera vez tarda unos segundos en
+  descomprimirse; las siguientes abre mucho más rápido.
+- Crea una carpeta **`Kakera Vault Datos`** al lado del `.exe` con:
+  - `app/` — tu colección, ajustes, perfiles y la sesión de Mudae.
+  - `copias/` — copia automática de tu colección en `.json` (una por perfil).
+  - `copias/diarias/` — una copia por día y perfil; se conservan las 7 últimas.
+- Para **actualizar**, sustituye el `.exe` por el nuevo y deja la carpeta `Kakera Vault Datos` donde está.
+- Para **mover la app**, copia el `.exe` y la carpeta `Kakera Vault Datos` juntos.
+- Si el `.exe` está en un sitio sin permiso de escritura, usa la carpeta de datos normal de Windows.
+- Abrir la carpeta de datos: ☰ Menú → **Carpeta de datos** (o `Ctrl+P`). La barra de estado muestra «💼 Portable».
+- Si ya usabas la app en modo desarrollo, la primera vez la versión portable trae esos datos automáticamente.
 
 ## ✨ Funciones
 
+- **Inicio**: totales, Top 10 por Kakera, series con más Kakera, evolución del Kakera entre importaciones y guía de primeros pasos.
 - **Biblioteca**: búsqueda avanzada (`series:`, `tag:`, `keys:>=3`, `ka:>1000`, `dup`…), filtros guardados, reordenar arrastrando,
-  fijar posiciones, edición/exportación en lote (`$note`, `$ec`, `$divorce` con deshacer), duplicados, estadísticas, historial de comandos,
-  copias de seguridad, temas y deshacer/rehacer.
-- **Ordenar por serie** con presets y vista previa.
-- **Inicio**: panel con totales, Top 10 por Kakera, series con más Kakera y evolución del Kakera entre importaciones; guía de primeros pasos si aún no hay datos.
-- **Paleta de comandos** (`Ctrl+P`): acciones rápidas y búsqueda de personajes. Barra lateral con iconos y barra de estado.
-- **Opción Nitro** (Configuración → Orden): los comandos se dividen en bloques más largos.
-- **📤 Exportar harem**: genera los comandos para dejar tu harem en Mudae con el orden elegido.
-- **Ficha de personaje**: imagen, serie, Kakera, llaves, **código de Mudae** (clic para copiar), color de marco `$ec` (solo con llaves) y **Mostrar imágenes**.
-- **👤 Perfiles**: varias colecciones independientes (otro servidor u otra cuenta de Mudae). Se cambia desde el botón de perfil de la cabecera;
-  cada perfil conserva su colección y su copia automática. Los ajustes visuales se comparten.
-- **👥 Amigos**: exporta tu lista (`.kvault.json`, o una página `.html` que se abre en cualquier navegador) e importa la de un amigo
-  (botón o arrastrando el archivo) en una vista **de solo lectura** con buscador, filtro por serie y orden. Se comparten nombre, serie,
-  Kakera, llaves e imagen; no se comparten notas, etiquetas ni colores.
-- **🔐 Cuenta de Mudae** (☰ Menú): inicia sesión una vez con Discord en la ventana de mudae.net. La sesión queda guardada en tu PC y la app
-  lee las galerías de imágenes directamente (sin proxy CORS), incluidas las que exigen cuenta. La contraseña solo la escribes en la web oficial.
-- **Copia automática** en `Documentos/Kakera Vault/` desde el primer arranque, ventana que recuerda tamaño y posición, diálogos nativos de
-  guardar/abrir, arrastrar y soltar archivos, atajos `Ctrl+1/2/3` para las pestañas.
+  fijar posiciones, edición/exportación en lote (`$note`, `$ec`, `$divorce` con deshacer), duplicados, estadísticas,
+  historial de comandos, copias de seguridad, temas y deshacer/rehacer.
+- **Series**: ordenar por serie con presets y vista previa.
+- **📤 Exportar harem**: comandos para dejar tu harem en Mudae con el orden elegido. Opción **Nitro** para bloques más largos.
+- **Ficha de personaje**: imagen, serie, Kakera, llaves, **código de Mudae** (clic para copiar), color de marco `$ec`
+  (solo con llaves) y **Mostrar imágenes**.
+- **👤 Perfiles**: varias colecciones independientes (otro servidor u otra cuenta de Mudae).
+- **👥 Amigos**: exporta tu lista (`.kvault.json` o página `.html`) e importa la de un amigo en una vista de solo lectura.
+  Se comparten nombre, serie, Kakera, llaves e imagen; no notas, etiquetas ni colores.
+- **🔐 Cuenta de Mudae**: inicia sesión una vez con Discord; la app lee las galerías de imágenes directamente (sin proxy),
+  incluidas las que exigen cuenta. La contraseña solo la escribes en la web oficial.
+- **Paleta de comandos** `Ctrl+P`, barra lateral, barra de estado, arrastrar y soltar archivos, atajos `Ctrl+1…4`.
 
 ## 📥 Importar tu harem desde Discord
 
 1. En Discord ejecuta `$mmsaty+ri-c+x+ko` (Mudae responde por DM).
 2. Copia desde el primer encabezado de serie hasta el último personaje (con su enlace).
-3. **Importar Harem** → pega, o usa *Pegar del portapapeles* / *Abrir archivo .txt*.
+3. **Importar Harem** → pega, o usa *Pegar del portapapeles* / *Abrir archivo .txt* / arrastra el `.txt`.
 
 Al reimportar se actualizan Kakera, llaves, series e imágenes y se conservan notas, colores, etiquetas y fijados.
 
-## 🗂️ Estructura
+## 🛠️ Desarrollo
+
+Requisitos: [Node.js](https://nodejs.org) 18+ y Windows 10/11.
+
+```bash
+git clone https://github.com/Lunara02/Mudae-Sorter.git
+cd Mudae-Sorter
+npm install      # descarga Electron (una sola vez)
+npm start        # abre la app (modo desarrollo: datos en %APPDATA%)
+npm run dist     # genera el portable en dist/
+```
+
+Si `npm install` no descarga el binario de Electron: `node node_modules/electron/install.js`.
 
 | Archivo | Descripción |
 |---|---|
-| `main.js` | Proceso principal de Electron: ventana, archivos, perfiles, sesión de Mudae. |
+| `main.js` | Proceso principal de Electron: ventana, carpeta de datos portable, archivos, perfiles, sesión de Mudae, copias. |
 | `preload.js` | Puente seguro `window.mudaeDesktop`. |
 | `index.html`, `style.css`, `v5.css` | Interfaz. |
 | `core.js` | Parser de la exportación de Mudae y constructores de comandos. |
 | `app.js` | Lógica de la biblioteca. |
-| `v5.js` | Amigos, perfiles, cuenta de Mudae y extras de escritorio. |
+| `v5.js` | Amigos, perfiles, cuenta de Mudae, copia diaria y extras. |
 | `home.js` | Inicio (panel), paleta de comandos y barra de estado. |
-| `docs/PLAN-V5.md`, `docs/ROADMAP.md` | Plan, decisiones y hoja de ruta. |
-
-## ℹ️ Notas
-
-- Los datos viven en la carpeta de datos de la app (`%APPDATA%\Kakera Vault`) y en `Documentos\Kakera Vault`.
-- Para traer datos de la v4: *Guardar proyecto* en la v4 y *Cargar proyecto* en la v5.
-- Los perfiles de amigos no se verifican: son datos que ellos declaran.
+| `docs/` | Plan y hoja de ruta. |

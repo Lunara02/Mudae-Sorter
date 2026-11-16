@@ -521,6 +521,15 @@ function setupAccounts() {
   };
 }
 
+/* ---------------------------------------------------------------- copia diaria */
+// Una copia por día y perfil en «copias/diarias» (se conservan las 7 últimas).
+async function dailyBackup() {
+  if (!D || !D.backupDaily || !A.getChars().length) return;
+  const p = activeProfile();
+  const prefix = p ? (p.id === 'main' ? 'principal' : slug(p.name)) : 'principal';
+  try { await D.backupDaily(prefix, JSON.stringify(A.serialize())); } catch (e) { /* no es crítico */ }
+}
+
 /* ---------------------------------------------------------------- arranque */
 document.addEventListener('mudae:tab', (e) => {
   if (e.detail && e.detail.tab === 'friends') renderFriends();
@@ -535,6 +544,7 @@ document.addEventListener('mudae:tab', (e) => {
   setupProfiles();
   if (document.body.dataset.tab === 'friends') renderFriends();
   setupAutoBackup();
+  setTimeout(dailyBackup, 8000);
 })();
 
 })();

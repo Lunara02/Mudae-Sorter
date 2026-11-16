@@ -16,6 +16,8 @@ contextBridge.exposeInMainWorld('mudaeDesktop', {
   writeDataFile: (filePath, text) => call('file:write', filePath, text),
   readDataFile: (filePath) => call('file:read', filePath),
   revealFile: (filePath) => call('file:reveal', filePath),
+  openFolder: (dir) => call('file:open-folder', dir),
+  backupDaily: (prefix, text) => call('backup:daily', prefix, text),
   mudaeLogin: () => call('mudae:login'),
   mudaeStatus: () => call('mudae:status'),
   mudaeLogout: () => call('mudae:logout'),
