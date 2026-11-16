@@ -257,6 +257,45 @@ function setupPalette() {
   if (nav) nav.addEventListener('click', openPalette);
 }
 
+/* ---------------------------------------------------------------- harem en el portapapeles */
+// Al volver a la ventana, si lo copiado parece una exportación de Mudae, se ofrece importarla.
+let clipSeen = '';
+function clipKey(t) { return t.length + ':' + t.slice(0, 80) + t.slice(-80); }
+
+async function checkClipboard() {
+  if (!D || !D.readClipboard) return;
+  if (!$('#importModal').hidden) return;
+  let text = '';
+  try { text = await D.readClipboard(); } catch (e) { return; }
+  if (!text || text.length < 300 || !/https?:\/\//.test(text)) return;
+  const key = clipKey(text);
+  if (key === clipSeen) return;
+  let parsed;
+  try { parsed = C.parseExport(text); } catch (e) { return; }
+  if (!parsed || parsed.chars.length < 3) return;
+  clipSeen = key;
+  showClipBanner(text, parsed);
+}
+
+function showClipBanner(text, parsed) {
+  let b = $('#clipBanner');
+  if (!b) {
+    b = document.createElement('div');
+    b.id = 'clipBanner';
+    b.className = 'clip-banner';
+    document.body.append(b);
+  }
+  const series = new Set(parsed.chars.map(c => c.series)).size;
+  b.hidden = false;
+  b.innerHTML = '<span class="ci">📋</span><div class="ct"><b>Harem detectado en el portapapeles</b><small>' +
+    fmt(parsed.chars.length) + ' personajes en ' + fmt(series) + ' series. ¿Quieres importarlo?</small></div>' +
+    '<button class="btn primary small" id="clipYes">Importar</button><button class="btn small ghost" id="clipNo">Ignorar</button>';
+  $('#clipYes').onclick = () => { b.hidden = true; A.importText(text); };
+  $('#clipNo').onclick = () => { b.hidden = true; };
+  clearTimeout(showClipBanner.t);
+  showClipBanner.t = setTimeout(() => { b.hidden = true; }, 20000);
+}
+
 /* ---------------------------------------------------------------- arranque */
 function refresh() {
   renderStatus();
@@ -279,6 +318,9 @@ function trackLayout() {
   const btnData = $('#btnOpenData');
   if (btnData) btnData.onclick = openDataFolder;
   document.addEventListener('mudae:render', refresh);
+  let clipTimer = 0;
+  window.addEventListener('focus', () => { clearTimeout(clipTimer); clipTimer = setTimeout(checkClipboard, 400); });
+  setTimeout(checkClipboard, 1500);
   document.addEventListener('mudae:tab', (e) => { if (e.detail && e.detail.tab === 'home') renderHome(); });
   // El perfil y el estado de guardado se actualizan fuera de render()
   for (const sel of ['#profileName', '#saveStatus']) {

@@ -1730,11 +1730,11 @@ function copyVisibleSeriesSm() {
   if (!names.length) { toast('No hay series visibles'); return; }
   const blocks = buildSmSeriesBlocks(names);
   showCommandsModal(
-    '📋 <code>$sm series</code> · series visibles',
+    '📋 Orden de series · solo las visibles',
     `<b>${names.length}</b> serie(s) visibles · ${blocks.length} bloque(s)`,
     blocks,
     'Solo se incluyen las series que coinciden con el filtro de búsqueda actual.',
-    { type: 'series', label: '$sm series · visibles' }
+    { type: 'series', label: 'Orden de series · visibles' }
   );
   if (blocks.length === 1) copyText(blocks[0]);
 }
@@ -2227,11 +2227,11 @@ function openSmSeries() {
     ? 'El comando supera el límite de Discord y se dividió en bloques. Ejecútalos en el orden mostrado: cada bloque coloca sus series al frente, así que al terminar obtendrás exactamente el orden de la lista.'
     : 'Copia este comando y pégalo en Discord. Solo ordena las series; para aplicar también el orden de las fotos dentro de cada serie usa “Exportar harem completo”.';
   showCommandsModal(
-    '🗂️ Comandos <code>$sm series</code>',
+    '🗂️ Orden de series para Mudae',
     `<b>${names.length}</b> serie(s) · ${blocks.length} bloque(s)`,
     blocks,
     note,
-    { type: 'series', label: 'Orden $sm series' }
+    { type: 'series', label: 'Orden de series' }
   );
   if (blocks.length === 1) copyText(blocks[0]);
 }
@@ -2239,7 +2239,7 @@ function openSmSeries() {
 function exportFullSmFromSeries() {
   if (!state.chars.length) { toast('Primero importe su colección'); return; }
   applySeriesOrderToLibrary({ pushHistory: true, quiet: true });
-  openSm('Comandos <code>$sm</code> · orden por serie');
+  openSm('Orden del harem · por series');
 }
 
 function countBySeries() {
@@ -3022,7 +3022,7 @@ function sortBy(mode) {
 
   if ($('#optAutoSmOnSort').checked) {
     closeDrawer();
-    openSm(label + ' — Comando $sm');
+    openSm('Orden del harem · ' + label);
     if (smBlocks.length === 1) copyText(smBlocks[0]);
   } else {
     toast(label);
@@ -3176,15 +3176,15 @@ function openSm(customTitle, scopeOverride) {
   const { names, warnings } = validateCommandNames(rawNames);
   const blocks = buildSmBlocks(names, cmdLimit());
   const extraNote = blocks.length > 1
-    ? 'Los bloques se encadenan automáticamente mediante <code>$smpos &lt;último personaje anterior&gt; $ ...</code>. Ejecute cada bloque en orden dentro de Discord.'
+    ? 'El orden es largo y se dividió en bloques encadenados. Pega cada bloque en Discord, en el orden en que aparecen.'
     : 'Copie y pegue este comando en Discord para aplicar el nuevo orden a su colección.';
 
   showCommandsModal(
-    customTitle || 'Comandos <code>$sm</code> para ordenar colección',
+    customTitle || 'Exportar harem · comandos de orden',
     `<b>${names.length}</b> personajes · ${blocks.length} bloque(s) · Alcance: <b>${scopeLabel(scope)}</b>`,
     blocks,
     extraNote,
-    { type: 'sm', label: 'Orden $sm · ' + scopeLabel(scope), warnings, context: { kind: 'sm', title: customTitle || '', scope } }
+    { type: 'sm', label: 'Orden del harem · ' + scopeLabel(scope), warnings, context: { kind: 'sm', title: customTitle || '', scope } }
   );
   const sc = $('#cmdScope');
   if (sc) sc.value = scope;
@@ -3378,12 +3378,12 @@ function divorceSelected() {
   const n = selectedChars.length;
   const removeFromLib = $('#divorceRemoveFromLib') ? $('#divorceRemoveFromLib').checked : true;
   const ask = removeFromLib
-    ? `¿Divorciar ${n} personaje(s)?\n\nSe generará el comando $divorce y se quitarán de la biblioteca.\nSe creará una copia de seguridad antes de continuar.`
-    : `¿Generar el comando $divorce para ${n} personaje(s)?\n\nNo se quitarán de la biblioteca.`;
+    ? `¿Divorciar ${n} personaje(s)?\n\nSe preparará el comando de divorcio y se quitarán de la biblioteca.\nSe creará una copia de seguridad antes de continuar.`
+    : `¿Preparar el divorcio de ${n} personaje(s)?\n\nNo se quitarán de la biblioteca.`;
   if (!confirm(ask)) return;
 
   const { names, warnings } = validateCommandNames(selectedChars.map(c => cleanCharName(c.name)));
-  if (!names.length) { toast('No hay nombres válidos para generar $divorce'); return; }
+  if (!names.length) { toast('No hay nombres válidos para el divorcio'); return; }
   const blocks = buildDivorceBlocks(names, cmdLimit());
 
   if (removeFromLib) {
@@ -3410,7 +3410,7 @@ function divorceSelected() {
   }
 
   showCommandsModal(
-    '🚪 Comandos <code>$divorce</code>',
+    '🚪 Divorcio · comandos para Discord',
     `<b>${names.length}</b> personaje(s) · ${blocks.length} bloque(s)` +
       (removeFromLib ? ' · <b>quitados de la biblioteca</b>' : ''),
     blocks,

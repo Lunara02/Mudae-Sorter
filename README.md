@@ -22,6 +22,8 @@ edita en lote, genera comandos para Discord, comparte tu lista y mira la de tus 
 
 ## ✨ Funciones
 
+- **Marca propia** (logo de cristal Kakera) y barra lateral; los botones dicen lo que hacen, sin nombres de comandos.
+- **Aviso de harem en el portapapeles**: si copias una exportación de Mudae, al volver a la app te ofrece importarla.
 - **Inicio**: totales, Top 10 por Kakera, series con más Kakera, evolución del Kakera entre importaciones y guía de primeros pasos.
 - **Biblioteca**: búsqueda avanzada (`series:`, `tag:`, `keys:>=3`, `ka:>1000`, `dup`…), filtros guardados, reordenar arrastrando,
   fijar posiciones, edición/exportación en lote (`$note`, `$ec`, `$divorce` con deshacer), duplicados, estadísticas,

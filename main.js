@@ -10,7 +10,7 @@
      en la carpeta de datos de la app.
    ========================================================================== */
 
-const { app, BrowserWindow, shell, ipcMain, dialog, session, Menu } = require('electron');
+const { app, BrowserWindow, shell, ipcMain, dialog, session, Menu, clipboard } = require('electron');
 const path = require('path');
 const fs = require('fs');
 
@@ -256,6 +256,10 @@ if (!app.requestSingleInstanceLock()) {
       for (const old of mine.slice(7)) await fs.promises.rm(path.join(dir, old), { force: true });
       return { ok: true, created: true, path: file };
     } catch (e) { return fail(e); }
+  });
+
+  ipcMain.handle('clipboard:read-text', () => {
+    try { return clipboard.readText().slice(0, 2000000); } catch (e) { return ''; }
   });
 
   ipcMain.handle('file:open-folder', async (_e, dir) => {

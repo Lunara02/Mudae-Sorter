@@ -102,3 +102,70 @@ nav.tabs .tab-btn kbd{margin-left:auto;font-size:10px;padding:1px 6px;border:1px
 body.theme-light nav.tabs{background:rgba(255,255,255,.85)}
 body.theme-light .statusbar{background:rgba(255,255,255,.94)}
 body.theme-light .home-kpi,body.theme-light .home-card,body.theme-light .pal{background:#fff}
+
+/* ================= Pulido visual ================= */
+::selection{background:color-mix(in srgb,var(--accent) 55%,transparent);color:#fff}
+*{scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.18) transparent}
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.14);border-radius:99px;border:2px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.28);border:2px solid transparent;background-clip:padding-box}
+::-webkit-scrollbar-track{background:transparent}
+button,nav,.topbar,.statusbar,.tabs,.dropdown-menu,.toolbar{user-select:none;-webkit-user-select:none}
+img{-webkit-user-drag:none}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:8px}
+
+/* marca */
+.topbar{padding:9px 20px}
+.brand{gap:11px}
+.brand-logo{width:30px;height:30px;border-radius:8px;box-shadow:0 4px 14px -4px var(--accent),0 0 0 1px rgba(255,255,255,.08)}
+.brand-text{display:grid;line-height:1.1}
+.brand-text b{font-size:15.5px;letter-spacing:.2px;background:linear-gradient(90deg,#fff,#c4b5fd);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.brand-text small{font-size:10.5px;color:var(--muted);font-weight:500;letter-spacing:.3px}
+
+/* botones */
+.btn{border-radius:10px;font-weight:600;letter-spacing:.1px;transition:background .15s,border-color .15s,box-shadow .15s,transform .1s,filter .15s}
+.btn:not(.primary):not(.danger):not(.ghost){background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.1)}
+.btn:not(.primary):not(.danger):not(.ghost):hover:not(:disabled){background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.18)}
+.btn.primary{background:linear-gradient(135deg,var(--accent),color-mix(in srgb,var(--accent) 60%,#22d3ee));border-color:transparent;color:#fff;box-shadow:0 6px 18px -8px var(--accent)}
+.btn.primary:hover:not(:disabled){filter:brightness(1.1);box-shadow:0 10px 24px -8px var(--accent)}
+.btn:active:not(:disabled){transform:translateY(1px) scale(.99)}
+.btn.icon-btn{width:34px;padding:0;display:inline-grid;place-items:center;font-size:16px;line-height:1}
+.undo-group{display:flex;gap:4px}
+.input,select.input{border-radius:10px;background:rgba(10,12,17,.7)}
+.input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+
+/* transiciones */
+main.v5-tab,#tabLib,#tabSeries{animation:kvFade .22s ease-out}
+@keyframes kvFade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.modal:not([hidden]) .modal-panel{animation:kvPop .18s ease-out}
+@keyframes kvPop{from{opacity:0;transform:scale(.97) translateY(8px)}to{opacity:1;transform:none}}
+.modal{backdrop-filter:blur(4px)}
+.modal-panel{border-radius:18px;border:1px solid rgba(255,255,255,.09);box-shadow:0 40px 90px -20px rgba(0,0,0,.85)}
+.modal-head h2{letter-spacing:-.2px}
+.toast{border-radius:12px;box-shadow:0 16px 40px rgba(0,0,0,.6);bottom:calc(var(--status-h) + 74px)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* tarjetas de herramienta y filtros */
+.tool-card{border-radius:16px;box-shadow:0 12px 30px -20px rgba(0,0,0,.8)}
+.toolbar{border-radius:14px}
+.series-block>summary{font-weight:700}
+.char-section{border-radius:12px}
+.dropdown-menu{border-radius:14px;box-shadow:0 24px 60px rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.1)}
+.dropdown-item{border-radius:8px}
+.dropdown-item:hover{background:var(--accent-soft)}
+
+/* estado vacío */
+.empty{padding:56px 20px;gap:12px}
+.empty::before{content:"";width:84px;height:84px;margin:0 auto 4px;background:url("icons/logo.svg") center/contain no-repeat;opacity:.9;filter:drop-shadow(0 10px 24px var(--accent-soft))}
+.empty strong{font-size:19px}
+
+/* aviso de portapapeles */
+.clip-banner{position:fixed;left:calc(var(--side-w) + 24px);right:24px;top:calc(var(--topbar-h) + 12px);z-index:120;display:flex;align-items:center;gap:14px;padding:12px 16px;border-radius:14px;
+  background:rgba(22,25,32,.96);border:1px solid var(--accent);box-shadow:0 18px 44px rgba(0,0,0,.6),0 0 24px var(--accent-soft);animation:kvFade .25s ease-out}
+.clip-banner[hidden]{display:none}
+.clip-banner .ci{font-size:20px}
+.clip-banner .ct{flex:1;min-width:0}
+.clip-banner .ct small{display:block;color:var(--muted)}
+
+#toolbar .grow{flex:3 1 300px}
+#toolbar{row-gap:8px}

@@ -14,16 +14,15 @@
 
 <header class="topbar">
   <div class="brand">
-    <span class="dot"></span>
-    <div>Kakera Vault</div>
-    <span class="brand-badge">v5</span>
+    <img class="brand-logo" src="icons/logo.svg" alt="" width="30" height="30">
+    <div class="brand-text"><b>Kakera Vault</b><small>Tu harem, en orden</small></div>
   </div>
 
   <div class="actions">
     <span id="saveStatus" class="save-status hidden" hidden aria-live="polite"></span>
     <div class="undo-group">
-      <button type="button" class="btn small icon-btn" id="btnUndo" title="Deshacer último cambio (Ctrl+Z)" disabled>↶ Deshacer</button>
-      <button type="button" class="btn small icon-btn" id="btnRedo" title="Rehacer cambio (Ctrl+Y)" disabled>↷ Rehacer</button>
+      <button type="button" class="btn small icon-btn" id="btnUndo" title="Deshacer último cambio (Ctrl+Z)" aria-label="Deshacer" disabled>↶</button>
+      <button type="button" class="btn small icon-btn" id="btnRedo" title="Rehacer cambio (Ctrl+Y)" aria-label="Rehacer" disabled>↷</button>
     </div>
 
     <button type="button" class="btn small" id="btnProfile" title="Cambiar de perfil (varios servidores o cuentas de Mudae)">👤 <span id="profileName">Principal</span> ▾</button>
@@ -84,7 +83,7 @@
 
   <!-- Barra de Filtros de la biblioteca -->
   <section class="toolbar" id="toolbar">
-    <input class="input grow" id="search" type="search" placeholder="Buscar… (avanzado: series:, tag:, keys:>=3, ka:>1000, pin:no, dup)" autocomplete="off" list="searchHelp" title="Búsqueda avanzada: usa prefijos como series:, name:, note:, tag:, color:, keys:>=3, ka:>1000, pin:no, has:note, -palabra, dup">
+    <input class="input grow" id="search" type="search" placeholder="Buscar personaje o serie…" autocomplete="off" list="searchHelp" title="Búsqueda avanzada: usa prefijos como series:, name:, note:, tag:, color:, keys:>=3, ka:>1000, pin:no, has:note, -palabra, dup">
     <select class="input" id="seriesSelect" title="Filtrar por serie"></select>
     <select class="input" id="keyFilter" title="Filtrar por cantidad de llaves">
       <option value="all">🔑 Llaves: Todos</option>
@@ -130,7 +129,7 @@
   </div>
 </main>
 
-<!-- PESTAÑA: ORDENAR POR SERIE ($sm series + orden de fotos dentro de cada serie) -->
+<!-- PESTAÑA: ORDENAR POR SERIE -->
 <main id="tabSeries" class="hidden" hidden>
   <section class="tool-card">
     <h2>🗂️ Ordenar por Serie</h2>
@@ -163,9 +162,9 @@
       <summary>📤 Exportar harem</summary>
       <div class="series-block-body">
         <div class="row">
-          <button type="button" class="btn small primary" id="btnSeriesCopySm" title="Generar el comando $sm series con el orden actual de las series">📋 Generar $sm series</button>
-          <button type="button" class="btn small" id="btnSeriesCopyVisible" title="Generar $sm series solo con las series visibles">👁️ Copiar visibles</button>
-          <button type="button" class="btn small" id="btnSeriesFullSm" title="Aplicar el orden y generar los comandos del harem completo">Exportar harem completo</button>
+          <button type="button" class="btn small primary" id="btnSeriesCopySm" title="Genera los comandos para dejar tus series en este orden dentro de Mudae">📋 Copiar orden de series</button>
+          <button type="button" class="btn small" id="btnSeriesCopyVisible" title="Genera el orden solo con las series que ves ahora (según el buscador)">👁️ Copiar solo las visibles</button>
+          <button type="button" class="btn small" id="btnSeriesFullSm" title="Aplica el orden y genera los comandos para ordenar todos tus personajes">Exportar harem completo</button>
         </div>
       </div>
     </details>
@@ -238,8 +237,8 @@
     </div>
     <span class="sep"></span>
     <button type="button" class="btn small" id="btnBatchPin" title="Fijar o desfijar seleccionados para que no se muevan al ordenar">📌 Fijar / Soltar</button>
-    <button type="button" class="btn small danger" id="btnBatchDivorce" title="Generar el comando $divorce y quitar los seleccionados de la biblioteca">🚪 Divorciar</button>
-    <button type="button" class="btn small primary" id="btnBatchModalOpen" title="Editar nota, precio de venta o color en lote">✨ Edición y Exportación Masiva</button>
+    <button type="button" class="btn small danger" id="btnBatchDivorce" title="Prepara el divorcio de los seleccionados y los quita de la biblioteca (con copia de seguridad)">🚪 Divorciar</button>
+    <button type="button" class="btn small primary" id="btnBatchModalOpen" title="Notas, precios, colores y etiquetas para toda la selección">✨ Edición en lote</button>
   </div>
 </div>
 
@@ -314,7 +313,7 @@
       </div>
 
       <div class="row" style="justify-content:space-between;margin-top:6px">
-        <span class="muted" style="font-size:12px">Simulador de páginas (<code>$mm</code>):</span>
+        <span class="muted" style="font-size:12px">Simulador de páginas del harem:</span>
         <select class="input" id="pageSizeSelect" style="padding:4px 8px;font-size:12px">
           <option value="0">Sin divisores de página</option>
           <option value="10">Cada 10 personajes (Estándar)</option>
@@ -336,7 +335,7 @@
     <div class="tool-section">
       <p class="hint" style="margin:0">Ordene su colección según el criterio seleccionado. Los personajes marcados con <b>📌 Fijar</b> conservarán su puesto actual.</p>
       <label class="check" title="Con Nitro los comandos se dividen en bloques más largos (menos mensajes)"><input type="checkbox" id="optNitro"> Tengo Discord Nitro (mensajes más largos al exportar)</label>
-      <label class="check"><input type="checkbox" id="optAutoSmOnSort" checked> Mostrar comando <code>$sm</code> automáticamente al ordenar</label>
+      <label class="check"><input type="checkbox" id="optAutoSmOnSort" checked> Mostrar los comandos de orden al ordenar</label>
 
       <div class="row" style="gap:6px;margin-top:4px">
         <button type="button" class="btn small" data-sort="kakera">◆ Por Kakera (Mayor a menor)</button>
@@ -476,20 +475,20 @@
         <div class="readonly-badges">
           <span class="ro-badge kakera" id="roKakera" title="Valor importado de Mudae">◆ 0 ka</span>
           <span class="ro-badge keys" id="roKeys" title="Llaves importadas de Mudae">🔑 Sin llaves</span>
-          <button type="button" class="ro-badge" id="btnCopyCode" title="Código del personaje en Mudae · clic para copiar" style="cursor:pointer;border:0">🆔 <span id="editCode">—</span></button>
+          <button type="button" class="ro-badge" id="btnCopyCode" title="Código del personaje en Mudae · clic para copiar" style="cursor:pointer;border:0">Código <b id="editCode">—</b></button>
         </div>
       </div>
       <button type="button" class="btn small" id="btnEditTogglePin" title="Fijar posición de este personaje">📌 Fijar</button>
     </div>
 
-    <!-- Color de marco ($ec): solo si el personaje cumple el requisito -->
+    <!-- Color de marco: solo si el personaje cumple el requisito -->
     <div class="char-section" id="editHexSection">
-      <h4><span>🎨 Color de marco (<code>$ec</code>)</span></h4>
+      <h4><span>🎨 Color de marco</span></h4>
       <div class="row">
         <input type="color" id="editColorPicker" value="#eab308">
         <input class="input mono" id="editHex" placeholder="#EAB308" maxlength="7" style="width:125px">
         <button type="button" class="btn small" id="btnClearHex" title="Quitar color">Quitar</button>
-        <button type="button" class="btn small primary" id="btnCopyEcIndividual" title="Copiar comando $ec para Discord">Copiar <code>$ec</code></button>
+        <button type="button" class="btn small primary" id="btnCopyEcIndividual" title="Copia el comando que aplica este color en Mudae">Copiar para Discord</button>
       </div>
     </div>
 
@@ -511,39 +510,39 @@
 <div class="modal hidden" id="batchModal" hidden>
   <div class="modal-panel narrow" role="dialog" aria-modal="true" aria-labelledby="batchModalTitle">
     <div class="modal-head">
-      <h2 id="batchModalTitle">✨ Edición y Exportación en Lote</h2>
+      <h2 id="batchModalTitle">✨ Edición en lote</h2>
       <button type="button" class="btn small" id="btnCloseBatchModal">Cerrar ✕</button>
     </div>
     <p class="hint" id="batchModalSubtitle">Acciones aplicadas a los personajes seleccionados.</p>
 
     <!-- 1. Nota común para todos los seleccionados -->
     <div class="char-section">
-      <h4><span>📝 Asignar Nota Común en Lote (<code>$note</code>)</span></h4>
-      <span class="hintline">Asigna el mismo texto a todos los seleccionados y genera un único comando concatenado:</span>
+      <h4><span>📝 Nota común</span></h4>
+      <span class="hintline">Pone la misma nota a todos los seleccionados y copia el comando para aplicarla en Mudae:</span>
       <div class="row">
         <input class="input" id="batchNoteInput" maxlength="120" placeholder="Ej: Intercambio / En venta…" style="flex:1">
-        <button type="button" class="btn small primary" id="btnApplyBatchNote">Aplicar y Copiar <code>$note</code></button>
+        <button type="button" class="btn small primary" id="btnApplyBatchNote">Aplicar nota y copiar para Discord</button>
       </div>
     </div>
 
     <!-- 2. Calculadora de precio +Kakera en lote -->
     <div class="char-section">
-      <h4><span>💲 Calcular Precio individual (+Kakera) en Lote</span></h4>
-      <span class="hintline">Suma un valor fijo al Kakera base de cada personaje seleccionado y genera sus comandos <code>$note</code> individuales:</span>
+      <h4><span>💲 Precio por personaje</span></h4>
+      <span class="hintline">Suma un margen al Kakera de cada personaje seleccionado y lo deja como nota de venta:</span>
       <div class="row">
         <input class="input" id="batchSaleAddInput" type="number" value="100" step="10" style="width:110px">
-        <button type="button" class="btn small primary" id="btnApplyBatchSale">Calcular precios y ver comandos</button>
+        <button type="button" class="btn small primary" id="btnApplyBatchSale">Calcular precios y copiar para Discord</button>
       </div>
     </div>
 
-    <!-- 3. Color HEX en lote ($ec) -->
+    <!-- 3. Color en lote -->
     <div class="char-section">
-      <h4><span>🎨 Color de Marco en Lote (<code>$ec</code>)</span></h4>
-      <span class="hintline">Aplica este color a los personajes seleccionados que posean llaves y copia el comando grupal:</span>
+      <h4><span>🎨 Color de marco</span></h4>
+      <span class="hintline">Aplica este color a los seleccionados que tengan llaves y copia el comando para Mudae:</span>
       <div class="row">
         <input type="color" id="batchColorPicker" value="#8b5cf6">
         <input class="input mono" id="batchHexInput" value="#8B5CF6" maxlength="7" style="width:120px">
-        <button type="button" class="btn small primary" id="btnApplyBatchEc">Aplicar y Copiar <code>$ec</code></button>
+        <button type="button" class="btn small primary" id="btnApplyBatchEc">Aplicar color y copiar para Discord</button>
       </div>
     </div>
 
@@ -561,26 +560,26 @@
 
     <!-- 4. Exportar lista para Tradeo / Comandos -->
     <div class="char-section">
-      <h4><span>📤 Exportar Nombres de la Selección</span></h4>
+      <h4><span>📤 Copiar la selección</span></h4>
       <div class="row">
-        <button type="button" class="btn small" id="btnCopyBatchNamesDollar">Copiar separados por <code>$</code> (Para comandos)</button>
-        <button type="button" class="btn small" id="btnCopyBatchTradeList">Copiar lista con valor de Kakera (Para Trade)</button>
+        <button type="button" class="btn small" id="btnCopyBatchNamesDollar">Copiar nombres separados para comandos</button>
+        <button type="button" class="btn small" id="btnCopyBatchTradeList">Copiar lista con Kakera para intercambios</button>
       </div>
     </div>
 
-    <!-- 5. Divorciar seleccionados ($divorce) -->
+    <!-- 5. Divorciar seleccionados -->
     <div class="char-section">
-      <h4><span>🚪 Divorciar Seleccionados (<code>$divorce</code>)</span></h4>
-      <span class="hintline">Genera el comando <code>$divorce nombre1 $ nombre2 $ …</code> para quitarlos de tu harem en Discord. Antes se crea una copia de seguridad.</span>
+      <h4><span>🚪 Divorcio</span></h4>
+      <span class="hintline">Prepara el comando para divorciar a los seleccionados en Discord. Antes se crea una copia de seguridad y puedes deshacerlo.</span>
       <label class="check" style="margin:6px 0"><input type="checkbox" id="divorceRemoveFromLib" checked> Quitarlos también de la biblioteca</label>
       <div class="row">
-        <button type="button" class="btn small danger" id="btnDivorceSelected">🚪 Generar <code>$divorce</code></button>
+        <button type="button" class="btn small danger" id="btnDivorceSelected">🚪 Preparar divorcio</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- MODAL DE COMANDOS GENERADOS ($sm, $note, $ec y Centro de Cambios) -->
+<!-- MODAL DE COMANDOS GENERADOS -->
 <div class="modal hidden" id="smModal" hidden>
   <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="smTitle">
     <div class="modal-head">
