@@ -30,7 +30,7 @@ edita en lote, genera comandos para Discord, comparte tu lista y mira la de tus 
   historial de comandos, copias de seguridad, temas y deshacer/rehacer.
 - **Series**: ordenar por serie con presets y vista previa.
 - **📤 Exportar harem**: comandos para dejar tu harem en Mudae con el orden elegido. Opción **Nitro** para bloques más largos.
-- **Esferas 🔮** (opcional): en Importar harem marca «Incluir esferas» para usar `$mmsaty+z+ri-c+x+ko`; se ven en tarjetas y ficha, se buscan con `sp:>100`, se ordenan por esferas y suman en Inicio. *Pendiente de validar con una salida real de Mudae.*
+- **Esferas 🔮** (opcional): en Importar harem marca «Incluir esferas» para usar `$mmsaty+z+ri-c+x+ko`; se ven en tarjetas y ficha, se buscan con `sp:>100`, se ordenan por esferas y suman en Inicio. Validado con líneas reales de Mudae.
 - **Ranking de claim**: la importación guarda el #N de cada personaje; se ve en la ficha, se busca con `rank:<500` y se ordena con «Por Ranking».
 - **Ficha de personaje**: imagen, serie, Kakera, llaves, **código de Mudae** (clic para copiar), color de marco `$ec`
   (solo con llaves) y **Mostrar imágenes**.
